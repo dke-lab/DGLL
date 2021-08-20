@@ -1,2 +1,4 @@
 Parameter:
+"Usage: "+" <in> <output> <minsup><no_of_mapper><no_of_reducer><k>"
+For example:
 ~/kHop_AGL/sample_data/cora_  ~/kHop_AGL/sample_data/cora.out 2 2 2 3
