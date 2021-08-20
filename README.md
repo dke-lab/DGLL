@@ -8,5 +8,5 @@ This repository consists of Java and Python code for the DGLL Project.
 ### Java Documentation
 
 
-### python Documentation
+### Python Documentation
 - [KHop Generation](Python/KHop/README.md)
