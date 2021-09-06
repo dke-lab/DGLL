@@ -74,12 +74,17 @@ def train(args):
             # Evaluate the current model.
             model.set_weights(ray.get(current_weights))
             node_list = list()
+            total_acc_train = 0
             data_iterator = data_loader
             node_list = [item for sublist in list(data_iterator) for item in sublist]
+            n = 0
             for testnodeID in node_list:
                 adj, features, labels, _ = load_Khopdata(int(testnodeID), -1)
                 outputs = model(features, adj)
                 acc_train = accuracy(outputs, labels)
+                total_acc_train =+ acc_train
                 print('acc_train: {:.4f}'.format(acc_train.item()))
+                n = n + 1
+            print('Total acc_train: {:.4f}'.format(total_acc_train/n))
     ray.shutdown()
 main_GCN()
