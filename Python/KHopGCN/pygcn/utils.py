@@ -2,6 +2,7 @@ import numpy as np
 import scipy.sparse as sp
 import networkx as nx
 import torch
+import os
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 # from sklearn.preprocessing import OneHotEncoder
 
@@ -54,38 +55,27 @@ def encode_onehot(labels):
                              dtype=np.int32)
     return labels_onehot
 
-def load_Khopdata(nodeID=None, neighborlist=None):
-    """Load citation network dataset (cora only for now)"""
-    print('Loading {} dataset...'.format("cora"))
+def generateAdjFeatures(G, idx_features_labels):
 
-    idx_features_labels = np.genfromtxt("{}{}.content".format("../data/cora/", "cora"),
-                                        dtype=np.dtype(str))
-    NodeN = []
-    G = nx.DiGraph()
-    neighbors = np.unique(neighborlist)
-    for node in neighbors:
-        G.add_node(node)
-    for edge in neighborlist:
-        G.add_edge(edge[0],edge[1])
     adj = nx.adjacency_matrix(G)
-    nodefeatures = np.zeros([G.number_of_nodes(),1433], dtype = int)
-    labels = np.zeros([G.number_of_nodes(),7], dtype = int)
-    i=0
+    nodefeatures = np.zeros([G.number_of_nodes(), 1433], dtype=int)
+    labels = np.zeros([G.number_of_nodes(), 7], dtype=int)
+    i = 0
     for node in G.nodes:
         idx = np.where(idx_features_labels[:, 0][:] == str(node))
         nodefeatures[i] = idx_features_labels[idx, 1:-1]
-        labelName = idx_features_labels[idx,-1]
+        labelName = idx_features_labels[idx, -1]
         lblidx = np.where(classes_list_str[:] == labelName[0])
         label_encoder = labelEncoding(classes_list_str)
 
-        print("classes_list_str[i]", classes_list_str[int(lblidx[0])])
+        # print("classes_list_str[i]", classes_list_str[int(lblidx[0])])
         classes_list_intEncoded = label_encoder.transform(classes_list_str)
-        print("classes_list_intEncoded[i]:", classes_list_intEncoded[int(lblidx[0])])
+        # print("classes_list_intEncoded[i]:", classes_list_intEncoded[int(lblidx[0])])
 
         onehot_encoder = oneHotEncoding(classes_list_intEncoded)
         onehot_encoder.transform([[classes_list_intEncoded[int(lblidx[0])]]])
         labels[i] = np.array(onehot_encoder.transform([[classes_list_intEncoded[int(lblidx[0])]]]))
-        i=i+1
+        i = i + 1
 
     # features = normalize(nodefeatures)
     adj = normalize(adj + sp.eye(adj.shape[0]))
@@ -93,49 +83,121 @@ def load_Khopdata(nodeID=None, neighborlist=None):
     features = torch.FloatTensor(nodefeatures)
     labels = torch.LongTensor(np.where(labels)[1])
     adj = sparse_mx_to_torch_sparse_tensor(adj)
+    return adj, features, labels
+
+def load_Khopdata(nodeID=None, neighborlist=None):
+    """Load citation network dataset (cora only for now)"""
+    # print('Loading {} dataset...'.format("cora"))
+
+    idx_features_labels = np.genfromtxt("{}{}.content".format("../data/cora/", "cora"),
+                                        dtype=np.dtype(str))
+    NodeN = []
+    # new added ocde IRFAN
+
+    # G = nx.DiGraph()
+    # neighbors = np.unique(neighborlist)
+    # for node in neighbors:
+    #     G.add_node(node)
+    # for edge in neighborlist:
+    #     G.add_edge(edge[0],edge[1])
+    # IRFAN ENDED
+    neighbors = list()
+    if os.path.exists("{}{}_3.txt".format("../data/cora/khop/", nodeID)):
+        # with FileLock(os.path.expanduser("~/" + "{}.content.lock".format(dataset))):
+        G = nx.read_edgelist("{}{}_3.txt".format("../data/cora/khop/", nodeID),create_using=nx.Graph(), nodetype = int)
+        for n in G.neighbors(int(nodeID)):
+            neighbors.append(n)
+        adj, features, labels = generateAdjFeatures(G, idx_features_labels)
+    else:
+        G = nx.Graph()
+        G.add_node(nodeID)
+        neighbors.append(nodeID)
+        adj, features, labels = generateAdjFeatures(G, idx_features_labels)
+
+    # adj = nx.adjacency_matrix(G)
+    # nodefeatures = np.zeros([G.number_of_nodes(),1433], dtype = int)
+    # labels = np.zeros([G.number_of_nodes(),7], dtype = int)
+    # i=0
+    # for node in G.nodes:
+    #     idx = np.where(idx_features_labels[:, 0][:] == str(node))
+    #     nodefeatures[i] = idx_features_labels[idx, 1:-1]
+    #     labelName = idx_features_labels[idx,-1]
+    #     lblidx = np.where(classes_list_str[:] == labelName[0])
+    #     label_encoder = labelEncoding(classes_list_str)
+    #
+    #     # print("classes_list_str[i]", classes_list_str[int(lblidx[0])])
+    #     classes_list_intEncoded = label_encoder.transform(classes_list_str)
+    #     # print("classes_list_intEncoded[i]:", classes_list_intEncoded[int(lblidx[0])])
+    #
+    #     onehot_encoder = oneHotEncoding(classes_list_intEncoded)
+    #     onehot_encoder.transform([[classes_list_intEncoded[int(lblidx[0])]]])
+    #     labels[i] = np.array(onehot_encoder.transform([[classes_list_intEncoded[int(lblidx[0])]]]))
+    #     i=i+1
+    #
+    # # features = normalize(nodefeatures)
+    # adj = normalize(adj + sp.eye(adj.shape[0]))
+    #
+    # features = torch.FloatTensor(nodefeatures)
+    # labels = torch.LongTensor(np.where(labels)[1])
+    # adj = sparse_mx_to_torch_sparse_tensor(adj)
 
     return adj, features, labels, len(neighbors)
 
 
-def load_data(path="../data/cora/", dataset="cora"):
-    """Load citation network dataset (cora only for now)"""
-    print('Loading {} dataset...'.format(dataset))
+def data_load(num_workers = 4):
+    new_list = []
+    i = 0
+    data_list = np.genfromtxt("{}{}.content".format("../data/cora/", "cora"))
+    data_list = data_list[:, 0].tolist()
+    seg = int(len(data_list) / num_workers)
+    while i < len(data_list):
+        if (len(data_list) - (i + seg) > seg):
+            new_list.append(data_list[i:i + seg])
+        else:
+            new_list.append(data_list[i:])
+        i += seg
+    return new_list
 
-    idx_features_labels = np.genfromtxt("{}{}.content".format(path, dataset),
-                                        dtype=np.dtype(str))
-    features = sp.csr_matrix(idx_features_labels[:, 1:-1], dtype=np.float32)
-    labels = encode_onehot(idx_features_labels[:, -1])
-
-    # build graph
-    idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
-    idx_map = {j: i for i, j in enumerate(idx)}
-    edges_unordered = np.genfromtxt("{}{}.cites".format(path, dataset),
-                                    dtype=np.int32)
-    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
-                     dtype=np.int32).reshape(edges_unordered.shape)
-    adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
-                        shape=(labels.shape[0], labels.shape[0]),
-                        dtype=np.float32)
-
-    # build symmetric adjacency matrix
-    adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
-
-    features = normalize(features)
-    adj = normalize(adj + sp.eye(adj.shape[0]))
-
-    idx_train = range(140)
-    idx_val = range(200, 500)
-    idx_test = range(500, 1500)
-
-    features = torch.FloatTensor(np.array(features.todense()))
-    labels = torch.LongTensor(np.where(labels)[1])
-    adj = sparse_mx_to_torch_sparse_tensor(adj)
-
-    idx_train = torch.LongTensor(idx_train)
-    idx_val = torch.LongTensor(idx_val)
-    idx_test = torch.LongTensor(idx_test)
-
-    return adj, features, labels, idx_train, idx_val, idx_test
+# def load_data(path="../data/cora/", dataset="cora"):
+#     """Load citation network dataset (cora only for now)"""
+#     # print('Loading {} dataset...'.format(dataset))
+#
+#
+#     idx_features_labels = np.genfromtxt("{}{}.content".format(path, dataset),
+#                                         dtype=np.dtype(str))
+#     features = sp.csr_matrix(idx_features_labels[:, 1:-1], dtype=np.float32)
+#     labels = encode_onehot(idx_features_labels[:, -1])
+#
+#     # build graph
+#     idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
+#     idx_map = {j: i for i, j in enumerate(idx)}
+#     edges_unordered = np.genfromtxt("{}{}.cites".format(path, dataset),
+#                                     dtype=np.int32)
+#     edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
+#                      dtype=np.int32).reshape(edges_unordered.shape)
+#     adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
+#                         shape=(labels.shape[0], labels.shape[0]),
+#                         dtype=np.float32)
+#
+#     # build symmetric adjacency matrix
+#     adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
+#
+#     features = normalize(features)
+#     adj = normalize(adj + sp.eye(adj.shape[0]))
+#
+#     idx_train = range(140)
+#     idx_val = range(200, 500)
+#     idx_test = range(500, 1500)
+#
+#     features = torch.FloatTensor(np.array(features.todense()))
+#     labels = torch.LongTensor(np.where(labels)[1])
+#     adj = sparse_mx_to_torch_sparse_tensor(adj)
+#
+#     idx_train = torch.LongTensor(idx_train)
+#     idx_val = torch.LongTensor(idx_val)
+#     idx_test = torch.LongTensor(idx_test)
+#
+#     return adj, features, labels, idx_train, idx_val, idx_test
 
 
 def normalize(mx):
