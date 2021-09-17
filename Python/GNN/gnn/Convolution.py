@@ -94,7 +94,7 @@ class GraphSage(nn.Module, object):
 
         self.num_layers = len(num_neighbors_list)
 
-    def fordward(self, node_feature_list):
+    def forward(self, node_feature_list):
         hidden = node_feature_list
         for l in range(self.num_layers):
             next_hidden = []
