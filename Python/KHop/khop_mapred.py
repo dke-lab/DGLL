@@ -3,27 +3,31 @@ import pydoop.mapreduce.api as api
 import pydoop.mapreduce.pipes as pp
 import sys
 class Mapper(api.Mapper):
+    # map function
     def map(self, context):
-        print("IRFAN KHOP NEW Mapper")
+        # print("IRFAN KHOP NEW Mapper")
         inNodeList = list()
         # {nodeId:[[inNodes]]}
         targetNodeConn = {}
+        # source and destination nodes
         sNode, dNode = context.value.split("\t")
         dNode = dNode.strip()      
-        # inNodes Addition
+        # inNodes(destination) Addition
         if dNode not in targetNodeConn.keys():
             targetNodeConn[dNode] = list()
             targetNodeConn[dNode].append(sNode)
         else:
             targetNodeConn[dNode].append(sNode)
+        # reducer
         context.emit(dNode, targetNodeConn[dNode])
 
 
 class Reducer(api.Reducer):
     def reduce(self, context):
-        print("IRFAN KHOP NEW Reducer")
+        # print("IRFAN KHOP NEW Reducer")
         fs = hdfs("localhost", 9000) 
         k = 1
+        # khop number; user defined
         if not fs.exists("/khop/khop_number.txt"):
             print("khop_main.py is not executed correctly:")
             sys.exit()
@@ -34,6 +38,7 @@ class Reducer(api.Reducer):
             print("khop should be greater than zero: default is 1.", khop)
             khop = 1
         if k == khop:
+            # output path for khop sub-graphs
             directory = "/khop"
             if not fs.exists(directory):
                 fs.create_directory(directory)
@@ -41,6 +46,7 @@ class Reducer(api.Reducer):
             path = directory + "/" + fileName
             self.oneHopGeneration(context, fs, path) 
         else:
+            # directory for temp files
             path = "/khop/tmp/"
             directory = "/tmp" + str(k) + "hop"
             print(path + directory)
@@ -51,7 +57,7 @@ class Reducer(api.Reducer):
             self.oneHopGeneration(context, fs, path + directory + "/" + fileName) 
 
      
-
+    # immediate neighbors generation
     def oneHopGeneration(self, context, fs, path):
         if fs.exists(path):
             f = fs.open_file(path, "at")
