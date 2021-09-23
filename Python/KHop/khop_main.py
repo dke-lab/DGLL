@@ -4,6 +4,7 @@
 import os
 import sys
 from pydoop.hdfs import hdfs
+# hdfs handler
 fs = hdfs("localhost", 9000) 
 khop = sys.argv[1]
 pathToInputData = str(sys.argv[2])
@@ -13,6 +14,7 @@ pathToKHop = "/khop"
 pathToKhopMapRed = "khop_mapred.py"
 pathToKhopMapRedCombine = "khop_mapred_combine.py"
 
+# assess command consistency
 if not (os.path.exists(pathToKhopMapRed) or fs.exists(pathToKhopMapRed)):
 	print("khop_mapred.py file not found:", pathToKhopMapRed)
 	sys.exit()
@@ -30,7 +32,7 @@ if not (os.path.exists(pathToInputData) or fs.exists(pathToInputData)):
 	sys.exit()
 if not fs.exists(pathToKHop):
     fs.create_directory(pathToKHop)
-
+# khop number
 f = fs.open_file(pathToKHop + "/khop_number.txt", 'wt')
 f.write(str(khop))
 f.close()
