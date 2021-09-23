@@ -7,7 +7,7 @@ class hdfsCombineReducer:
         # get list of nodes from tmpkhop
         directory = "tmp" + str(khop) + "hop/"
         allNodesListTmpKHop = fs.list_directory(path + directory)
-        # create directory for stroing output
+        # create directory for storing output
         for n in range(len(allNodesListTmpKHop)):
             node = allNodesListTmpKHop[n]["name"].split("/")[-1].split(".")[0].split("_")[0]
             # Merge All ks(1,2,  3, ..., k) hops from all tmpkhop folders where k = 1, 2, 3, ...., khop
@@ -17,17 +17,21 @@ class hdfsCombineReducer:
                 txt =  txt.read()
                 targetAdjacenNodesList += txt
             targetAdjacenNodesList = targetAdjacenNodesList.split("\n")
+            # remobe duplicate edges
             targetAdjacenNodesList = list(set(targetAdjacenNodesList))
             targetAdjacenNodesList = list(filter(None, targetAdjacenNodesList))
+            # convert to a format "srcNode\tdestNode\n"
             targetAdjacenNodesList = '\n'.join([str(e) for e in targetAdjacenNodesList])
             targetAdjacenNodesList = targetAdjacenNodesList + '\n'
             fileName =  str(node) + "_" + str(khop) + '.txt'
             f_new = fs.open_file(path.replace("/tmp", "") + fileName, "wt")
             f_new.write(targetAdjacenNodesList)
             f_new.close()
+        # clear temp files
         self.deleteTmpFiles(fs, path)
     def tmpk_hop(self, fs, khop, path):
         k = 2
+        # generate subgraph for khop number 
         while k <= khop:
             pathToTmpDir = ""
             directory = "tmp" + str(k) + "hop/"
@@ -66,6 +70,7 @@ class hdfsCombineReducer:
         self.k_hop(fs, khop, path)
         
     def reducer(self):
+        # hdfs handler
         fs = hdfs("localhost", 9000)
         khop = 3
         if khop < 1:
@@ -77,6 +82,7 @@ class hdfsCombineReducer:
         if khop == 1:
             print("create first neibhbour hood because k == khop")
         else:
+            # generate khop subgraphs
             path = path + "/khop/tmp/"
             self.tmpk_hop(fs, khop, path)
 obj = hdfsCombineReducer()

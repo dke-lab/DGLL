@@ -19,6 +19,7 @@ import ray
 
 
 def main_GCN():
+     # set parameters 
     parser = argparse.ArgumentParser()
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='Disables CUDA training.')
@@ -41,7 +42,7 @@ def main_GCN():
     args = parser.parse_args()
     train(args)
 
-
+# training the model
 def train(args):
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -53,10 +54,11 @@ def train(args):
                 nhid=32,
                 nclass=7,
                 dropout=args.dropout)
-
+# iterating through the data
     data_loader =  data_load(num_workers = args.workers)
     ray.init(ignore_reinit_error=True)
     ps = ParameterServer.remote(1e-2, args.dropout)
+# data workers
     workers = [DataWorker.remote(args.dropout, data_loader) for i in range(args.workers)]
     print("Running parameter server training.")
     current_weights = ps.get_weights.remote()
