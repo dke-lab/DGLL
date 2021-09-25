@@ -1,5 +1,5 @@
-# KHop
-Generating KHop in the MapReduce Infrastructure.
+# Graph neural network Implementation
+It contains Implementation for various GNNs models such as GCN, GraphSage, GAT etc..
 # Requirement
 - Python 3.6.9
 - Pydoop 2.0.0
