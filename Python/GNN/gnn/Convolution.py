@@ -4,9 +4,16 @@ import torch.nn as nn
 import torch.nn.init as init
 import torch.nn.functional as F
 import math
-
+r"""
+This class has been developed to accomodate various spatial convolution graph algorithms
+Initial Graph convolution network, Graph Attention network and GraphSage has been implemented
+User can create multiple layer GCN. GraphSage and GAT models using methods from these class
+"""
 
 class NeighborAggregator(nn.Module):
+    """
+
+    """
     def __init__(self, input_dim, output_dim, use_bias=False, aggr_method="mean"):
         super(NeighborAggregator, self).__init__()
         self.input_dim = input_dim
