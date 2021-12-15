@@ -9,9 +9,10 @@ Run the code
 You can run the code using the following command:
 
 inputPath outputPath k 
+
 Where
 
-Khop: required khop number
+k: required khop number
 path/inputgraph: hdfs path to the input graph
 path/khop: hdfs path to the output
 Output:
