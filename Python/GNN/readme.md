@@ -1,6 +1,7 @@
 # Graph neural network Implementation
 It contains Implementation for various GNNs models such as GCN, GraphSage, GAT etc..
 # Requirement
+- pytorch
 - Python 3.6.9
 - Pydoop 2.0.0
 - Hadoop 3.3.1
