@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90894d43-d16e-40ff-ac4b-e45e80da262e" name="Changes" comment="Code structured and comments added">
-      <change afterPath="$PROJECT_DIR$/Python/GNN/gnn/Readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/GNN/GCN-training-example-on-Cora.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/GNN/GCN-training-example-on-Cora.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/GNN/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Python/GNN/readme.md" afterDir="false" />
+    <list default="true" id="90894d43-d16e-40ff-ac4b-e45e80da262e" name="Changes" comment="corrections">
+      <change beforePath="$PROJECT_DIR$/Python/GNN/gnn/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Python/GNN/gnn/Readme.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,7 +165,35 @@
       <option name="project" value="LOCAL" />
       <updated>1655455282036</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Readme file added">
+      <created>1655456908893</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1655456908893</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Readme file added">
+      <created>1655456927255</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1655456927255</updated>
+    </task>
+    <task id="LOCAL-00007" summary="adjusted">
+      <created>1655456947297</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1655456947297</updated>
+    </task>
+    <task id="LOCAL-00008" summary="corrections">
+      <created>1655456965276</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1655456965276</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -186,6 +211,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="typing mistake removed" />
     <MESSAGE value="Code structured and comments added" />
-    <option name="LAST_COMMIT_MESSAGE" value="Code structured and comments added" />
+    <MESSAGE value="Readme file added" />
+    <MESSAGE value="adjusted" />
+    <MESSAGE value="corrections" />
+    <option name="LAST_COMMIT_MESSAGE" value="corrections" />
   </component>
 </project>
