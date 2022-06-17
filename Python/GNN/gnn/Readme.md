@@ -1,11 +1,23 @@
-# Graph neural networks library
-###Introduction
+# Graph neural networks library 
+
+### Introduction
 This package contains implementation for popular Graph neural network models such as GCN, GraphSage, and GAT.
 It also contains Global Pooling methods such as sum, mean, and max
 In future we will add more GNNs models and will improve its performance both in a single
 and distributed environment for GNNs
 
+#### Requirements
+```
+Python 3.6 >
+PyTorch 1.4 >
+numpy==1.14.1
+scipy==1.0.0
+networkx==2.1
+tensorflow-gpu==1.6.0
+```
+
 ### How to utilize a code? (Tutorial)
+
 To utlilize Implemented GNNs we have provided examples in the repository.
 ```
 install DGLL package then add
@@ -80,15 +92,7 @@ def test():
           "loss= {:.4f}".format(loss_test.item()),
           "accuracy= {:.4f}".format(acc_test.item()))
 ```
-#### Requirements
-```
-Python 3.6 >
-PyTorch 1.4 >
-numpy==1.14.1
-scipy==1.0.0
-networkx==2.1
-tensorflow-gpu==1.6.0
-```
+
 
 
 
