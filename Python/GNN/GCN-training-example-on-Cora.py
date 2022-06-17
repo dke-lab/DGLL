@@ -9,7 +9,6 @@ import torch.optim as optim
 
 from utils.utils import load_data, load_khop, accuracy
 from gnn.Convolution import gcnConv
-from gnn.Convolution import GCN
 
 import tqdm
 
