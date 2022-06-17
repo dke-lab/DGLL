@@ -1,9 +1,16 @@
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.init as init
 import torch.nn.functional as F
-import math
+
+
+# This class has been created to provide graphSage convolutional layer from the paper
+# " Inductive Representation Learning on Large Graphs by Hamilton",
+# It provides graphSage convolutional operation by providing graphsage mean, max and LSTM aggregations and combining by
+# a non linear function.
+# date created = 22 Oct, 2021, Project name : GDBMs, created by: Tariq Habib Afridi, email address: afridi@khu.ac.kr
+
+
 r"""
 This class has been developed to accomodate various spatial convolution graph algorithms
 Initial Graph convolution network, Graph Attention network and GraphSage has been implemented
@@ -11,8 +18,8 @@ User can create multiple layer GCN. GraphSage and GAT models using methods from 
 """
 
 class NeighborAggregator(nn.Module):
-    """
-
+    """ This class provides neighbor aggregation based on three functions such as mean, sum, and max
+    used in sageConv of GraphSage conv layer.
     """
     def __init__(self, input_dim, output_dim, use_bias=False, aggr_method="mean"):
         super(NeighborAggregator, self).__init__()
@@ -48,13 +55,15 @@ class NeighborAggregator(nn.Module):
         return neighbor_hidden
 
 
-class SageGCN(nn.Module):
+class sageConv(nn.Module):
+    """ This class provides implementation for the GraphSage convolutional layer.
+        """
     def __init__(self, input_dim, hidden_dim,
                  activation=F.relu,
                  aggr_neighbor_method="mean",
                  aggr_hid_method="sum"):
 
-        super(SageGCN, self).__init__()
+        super(sageConv, self).__init__()
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.activation = activation
@@ -83,7 +92,7 @@ class SageGCN(nn.Module):
             hidden = self.activation(hidden)
         return hidden
 
-
+#an example of using sageGCN where it created a two layer GraphSage model for node classification
 class GraphSage(nn.Module, object):
     """docstring for GraphSage"""
 
@@ -94,8 +103,8 @@ class GraphSage(nn.Module, object):
         self.num_neighbors_list = num_neighbors_list
 
         self.gcn = []
-        self.gcn1 = SageGCN(input_dim, hidden_dim[0])
-        self.gcn2 = SageGCN(hidden_dim[0], hidden_dim[1])
+        self.gcn1 = sageConv(input_dim, hidden_dim[0])
+        self.gcn2 = sageConv(hidden_dim[0], hidden_dim[1])
         self.gcn.append(self.gcn1)
         self.gcn.append(self.gcn2)
 
@@ -113,55 +122,3 @@ class GraphSage(nn.Module, object):
                 next_hidden.append(h)
             hidden = next_hidden
         return hidden[0]
-
-
-class GraphConvolution(nn.Module):
-
-    def __init__(self, in_features, out_features, bias=True):
-        super(GraphConvolution, self).__init__()
-        self.in_features = in_features
-        self.out_features = out_features
-        self.weight = nn.Parameter(torch.FloatTensor(in_features, out_features))
-        if bias:
-            self.bias = nn.Parameter(torch.FloatTensor(out_features))
-        else:
-            self.register_parameter('bias', None)
-
-        self.reset_parameters()
-
-    def reset_parameters(self):
-        stdv = 1. / math.sqrt(self.weight.size(1))
-        self.weight.data.uniform_(-stdv, stdv)
-        if self.bias is not None:
-            self.bias.data.uniform_(-stdv, stdv)
-
-    def forward(self, x, adj):
-        support = torch.mm(x, self.weight) # matrix multiplication
-        output = torch.spmm(adj, support)  # sparse matrix multiplication
-        if self.bias is not None:
-            return output + self.bias
-        else:
-            return output
-
-    def __repr__(self):
-        return self.__class__.__name__ + ' (' \
-               + str(self.in_features) + ' -> ' \
-               + str(self.out_features) + ')'
-
-
-class GCN(nn.Module):
-    def __init__(self, in_features, nhid, nclass, dropout):
-        super(GCN, self).__init__()
-        self.in_features = in_features
-        self.nhid = nhid
-        self.nclass = nclass
-        self.dropout = dropout
-        self.gcn1 = GraphConvolution(in_features, nhid)
-        self.gcn2 = GraphConvolution(nhid, nclass)
-
-    def forward(self, x, adj):
-        h1 = F.relu(self.gcn1(x, adj))
-        h1_d = F.dropout(h1, self.dropout, training=self.training)
-        logits = self.gcn2(h1_d, adj)
-        output = F.log_softmax(logits, dim=1)
-        return output
