@@ -8,6 +8,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 from utils.utils import load_data, load_khop, accuracy
+from gnn.Convolution import gcnConv
 from gnn.Convolution import GCN
 
 import tqdm
@@ -43,6 +44,23 @@ adj, features, labels, idx_train, idx_val, idx_test = load_data()
 # adj, features, labels, idx_train, idx_val = load_data()
 
 # Model and optimizer
+class GCN(torch.nn.Module):
+    def __init__(self, in_features, nhid, nclass, dropout):
+        super(GCN, self).__init__()
+        self.in_features = in_features
+        self.nhid = nhid
+        self.nclass = nclass
+        self.dropout = dropout
+        self.gcn1 = gcnConv(in_features, nhid)
+        self.gcn2 = gcnConv(nhid, nclass)
+
+    def forward(self, x, adj):
+        h1 = F.relu(self.gcn1(x, adj))
+        h1_d = F.dropout(h1, self.dropout, training=self.training)
+        logits = self.gcn2(h1_d, adj)
+        output = F.log_softmax(logits, dim=1)
+        return output
+
 model = GCN(in_features=features.shape[1],
             nhid=args.hidden,
             nclass=labels.max().item() + 1,
