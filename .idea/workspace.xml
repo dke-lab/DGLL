@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90894d43-d16e-40ff-ac4b-e45e80da262e" name="Changes" comment="typing mistake removed">
-      <change afterPath="$PROJECT_DIR$/Python/GNN/gnn/DenseConvolution.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Python/GNN/gnn/Pooling.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Python/GNN/gnn/Utilities.py" afterDir="false" />
+    <list default="true" id="90894d43-d16e-40ff-ac4b-e45e80da262e" name="Changes" comment="Code structured and comments added">
+      <change afterPath="$PROJECT_DIR$/Python/GNN/gnn/Readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/GNN/gnn/Convolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/GNN/gnn/Convolution.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/GNN/GCN-training-example-on-Cora.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/GNN/GCN-training-example-on-Cora.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/GNN/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Python/GNN/readme.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +23,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1yGenGh714HR3sCv6sRKGYwwAWB" />
@@ -147,7 +147,28 @@
       <option name="project" value="LOCAL" />
       <updated>1631885047111</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Code structured and comments added">
+      <created>1655455137481</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1655455137481</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Code structured and comments added">
+      <created>1655455152479</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1655455152479</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Code structured and comments added">
+      <created>1655455282036</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1655455282036</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -160,9 +181,11 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="typing mistake removed" />
-    <option name="LAST_COMMIT_MESSAGE" value="typing mistake removed" />
+    <MESSAGE value="Code structured and comments added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Code structured and comments added" />
   </component>
 </project>
